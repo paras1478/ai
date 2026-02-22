@@ -1,39 +1,40 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches: ["main"]
+push:
+branches: ["main"]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+deploy:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Deploy on server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            echo "Connected to server"
+  - name: SSH Deploy
+    uses: appleboy/ssh-action@v1.0.3
+    with:
+      host: ${{ secrets.EC2_HOST }}
+      username: ubuntu
+      key: ${{ secrets.EC2_SSH_KEY }}
+      port: 22
+      script: |
+        set -e
+        echo "Connected to server"
 
-            # first time clone (agar folder nahi hai)
-            if [ ! -d "AI-learning" ]; then
-              git clone https://github.com/paras1478/AI-learning.git
-            fi
+        # first time clone
+        if [ ! -d "$HOME/ai" ]; then
+          git clone https://github.com/paras1478/ai.git $HOME/ai
+        fi
 
-            cd AI-learning
+        cd $HOME/ai
 
-            echo "Pull latest code"
-            git pull origin main
+        echo "Pull latest code"
+        git pull origin main
 
-            echo "Restart docker"
-            sudo docker compose down
-            sudo docker compose up -d --build
+        echo "Restart docker"
+        docker compose down || true
+        docker compose up -d --build
 
-            echo "Deployment completed"
+        echo "Deployment completed"
