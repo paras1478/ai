@@ -1,33 +1,38 @@
-name: Deploy
+name: Deploy to EC2
 
 on:
-  push:
-    branches: ["main"]
+push:
+branches: [ "main" ]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+deploy:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Connect EC2 & Deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            echo "Connected"
+```
+steps:
+  - name: Checkout repo
+    uses: actions/checkout@v4
 
-            # clone first time
-            if [ ! -d "$HOME/ai" ]; then
-              git clone https://github.com/paras1478/ai.git ~/ai
-            fi
+  - name: Deploy to Server
+    uses: appleboy/ssh-action@v1.0.3
+    with:
+      host: ${{ secrets.EC2_HOST }}
+      username: ${{ secrets.EC2_USER }}
+      key: ${{ secrets.EC2_SSH_KEY }}
+      script: |
+        cd ~/ai
 
-            cd ~/ai
+        echo "📥 Pulling latest code"
+        git pull origin main
 
-            git pull origin main
+        echo "🛑 Stopping old containers"
+        docker compose down
 
-            docker compose down
-            docker compose up -d --build
+        echo "🧹 Cleaning old images"
+        docker image prune -af
 
-            echo "Done"
+        echo "🏗 Building new containers"
+        docker compose up -d --build
+
+        echo "✅ Deploy finished"
+```
