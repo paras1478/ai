@@ -10,7 +10,7 @@ import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import errorhandler from "./middleware/errorhandler.js";
 
-import uploadRoute from "./routes/uploadRoute.js";
+import uploadRoute from "./routes/uploadRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
