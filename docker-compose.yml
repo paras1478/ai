@@ -9,7 +9,7 @@ services:
       - ./backend/.env
 
   frontend:
-    build: ./frontend
+    build: ./frontend/app
     container_name: frontend
     restart: always
     ports:
