@@ -1,28 +1,26 @@
 name: Deploy to EC2
 
 on:
-push:
-branches: [ main ]
+  push:
+    branches:
+      - main
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-steps:
-  - name: Checkout
-    uses: actions/checkout@v4
-
-  - name: Create SSH key
-    run: |
-      echo "${{ secrets.EC2_SSH_KEY_B64 }}" | base64 -d > key
-      chmod 600 key
-
-  - name: Deploy
-    run: |
-      ssh -o StrictHostKeyChecking=no -i key ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-        cd ~/ai
-        git pull origin main
-        docker compose down
-        docker compose up -d --build
-      EOF
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/ai
+            git pull origin main
+            docker compose down
+            docker compose up -d --build
