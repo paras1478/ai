@@ -1,16 +1,16 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import app from "./app.js";
 import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import app from "./app.js";
 
 import connectDB from "./config/db.js";
 import errorhandler from "./middleware/errorhandler.js";
-import uploadRoute from "./routes/uploadRoute.js";
 
+import uploadRoute from "./routes/uploadRoute.js";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
@@ -21,28 +21,20 @@ import quizRoutes from "./routes/quizRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
-
-
 connectDB();
 
-
 app.use(cors());
-app.use(express.json()); 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use(
   "/uploads/documents",
   express.static(path.join(__dirname, "uploads/documents"))
 );
 
-
-
 app.get("/ping", (req, res) => {
   res.status(200).json({ message: "Server is alive" });
 });
-
 
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
@@ -52,12 +44,9 @@ app.use("/api/quizzes", quizRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api", uploadRoute);
 
-
-
 app.use(errorhandler);
-
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(` Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
