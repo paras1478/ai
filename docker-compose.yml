@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   backend:
-    image: paras1478/backend:latest
+    build: ./backend
     container_name: backend
     restart: always
     ports:
@@ -11,7 +9,7 @@ services:
       - ./backend/.env
 
   frontend:
-    image: paras1478/frontend:latest
+    build: ./frontend
     container_name: frontend
     restart: always
     ports:
