@@ -11,9 +11,9 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-export const upload = multer({
+const upload = multer({
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 }, 
+  limits: { fileSize: 10 * 1024 * 1024 },
   storage: multerS3({
     s3: s3,
     bucket: process.env.AWS_BUCKET_NAME,
@@ -24,3 +24,5 @@ export const upload = multer({
     },
   }),
 });
+
+export default upload;   
