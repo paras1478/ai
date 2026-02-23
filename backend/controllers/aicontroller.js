@@ -2,15 +2,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { GoogleGenAI } from "@google/genai";
+ const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_API_KEY,
+});
 
 import Document from "../models/document.js";
 import ChatHistory from "../models/ChatHistory.js";
 import Quiz from "../models/Quiz.js";
 import Flashcard from "../models/Flashcard.js";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GOOGLE_API_KEY,
-});
+
 
 
 export const generateFlashcardsFromText = async (text, count = 10) => {
