@@ -8,7 +8,6 @@ jobs:
 deploy:
 runs-on: ubuntu-latest
 
-```
 steps:
   - name: Checkout repo
     uses: actions/checkout@v4
@@ -35,4 +34,4 @@ steps:
         docker compose up -d --build
 
         echo "✅ Deploy finished"
-```
+
