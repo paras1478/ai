@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import app from "./app.js";
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -10,13 +9,15 @@ import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import errorhandler from "./middleware/errorhandler.js";
 
-import uploadRoute from "./routes/uploadRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
 import flashcardRoutes from "./routes/flashcardRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
+
+const app = express();   
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,11 +43,9 @@ app.use("/api/flashcards", flashcardRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/quizzes", quizRoutes);
 app.use("/api/progress", progressRoutes);
-app.use("/api", uploadRoute);
+app.use("/api/upload", uploadRoutes);
 
 app.use(errorhandler);
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
