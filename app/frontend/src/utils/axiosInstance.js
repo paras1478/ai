@@ -1,13 +1,15 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://ai-production-5490.up.railway.app",
+  baseURL: import.meta.env.VITE_API_URL || "https://ai-production-5490.up.railway.app",
   timeout: 80000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+// attach token
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -19,12 +21,14 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// better error handling
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    return Promise.reject(
-      error.response?.data || { message: "Network error" }
-    );
+    if (error.response) {
+      return Promise.reject(error.response.data);
+    }
+    return Promise.reject({ message: "Server unreachable" });
   }
 );
 

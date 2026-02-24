@@ -17,14 +17,23 @@ import flashcardRoutes from "./routes/flashcardRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
 
-const app = express();   
+const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true,            
+    credentials: true,
+    methods: ["GET","POST","PUT","DELETE","PATCH"],
+    allowedHeaders: ["Content-Type","Authorization"],
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,9 +42,14 @@ app.use(
   express.static(path.join(__dirname, "uploads/documents"))
 );
 
+app.get("/", (req, res) => {
+  res.send("API Running ");
+});
+
 app.get("/ping", (req, res) => {
   res.status(200).json({ message: "Server is alive" });
 });
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
@@ -45,7 +59,9 @@ app.use("/api/quizzes", quizRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/upload", uploadRoutes);
 
+
 app.use(errorhandler);
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
