@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import errorhandler from "./middleware/errorhandler.js";
-
 import uploadRoutes from "./routes/uploadRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
@@ -18,13 +17,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
-
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,16 +26,9 @@ app.use(
   express.static(path.join(__dirname, "uploads/documents"))
 );
 
-/* health routes */
-app.get("/", (req, res) => {
-  res.send("API RUNNING");
-});
+app.get("/", (req, res) => res.send("API Running"));
+app.get("/ping", (req, res) => res.json({ message: "Server is alive" }));
 
-app.get("/ping", (req, res) => {
-  res.json({ message: "Server is alive" });
-});
-
-/* routes */
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/flashcards", flashcardRoutes);
