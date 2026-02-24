@@ -1,7 +1,17 @@
+import express from "express";
+import cors from "cors";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
 app.get("/", (req, res) => {
-  res.send("API RUNNING ");
+  res.send("API RUNNING");
 });
 
 app.get("/ping", (req, res) => {
-  res.status(200).json({ message: "Server is alive" });
+  res.json({ message: "Server is alive" });
 });
+
+export default app;
