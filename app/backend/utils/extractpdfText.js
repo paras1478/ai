@@ -1,26 +1,27 @@
 import fs from "fs";
-import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = undefined;
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.js"; 
 
 export const extractPdfText = async (filePath) => {
   const data = new Uint8Array(fs.readFileSync(filePath));
 
-  const loadingTask = pdfjsLib.getDocument({
+  const pdf = await getDocument({
     data,
     useWorkerFetch: false,
     isEvalSupported: false,
     useSystemFonts: true
-  });
-
-  const pdf = await loadingTask.promise;
+  }).promise;
 
   let text = "";
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum);
     const content = await page.getTextContent();
-    text += content.items.map(i => i.str).join(" ") + "\n";
+
+    const pageText = content.items
+      .map(item => item.str || "")
+      .join(" ");
+
+    text += pageText + "\n";
   }
 
   return text;
