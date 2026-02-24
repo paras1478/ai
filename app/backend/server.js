@@ -5,7 +5,6 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import app from "./app.js";
 
 import connectDB from "./config/db.js";
 import errorhandler from "./middleware/errorhandler.js";
@@ -18,20 +17,17 @@ import flashcardRoutes from "./routes/flashcardRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import quizRoutes from "./routes/quizRoutes.js";
 
-const app = express();
+const app = express();  
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 connectDB();
 
 app.use(
   cors({
-    origin: true,            
+    origin: true,
     credentials: true,
-    methods: ["GET","POST","PUT","DELETE","PATCH"],
-    allowedHeaders: ["Content-Type","Authorization"],
   })
 );
 
@@ -44,13 +40,12 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.send("API Running ");
+  res.send("API Running");
 });
 
 app.get("/ping", (req, res) => {
-  res.status(200).json({ message: "Server is alive" });
+  res.json({ message: "Server is alive" });
 });
-
 
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
@@ -60,11 +55,10 @@ app.use("/api/quizzes", quizRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/upload", uploadRoutes);
 
-
 app.use(errorhandler);
 
-
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
