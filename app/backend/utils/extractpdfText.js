@@ -1,5 +1,7 @@
 import fs from "fs";
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.js"; 
+import pdfjs from "pdfjs-dist/legacy/build/pdf.js";
+
+const { getDocument } = pdfjs;
 
 export const extractPdfText = async (filePath) => {
   const data = new Uint8Array(fs.readFileSync(filePath));
