@@ -1,21 +1,13 @@
-FROM node:20-bullseye
-
-RUN apt-get update && apt-get install -y \
-    libcairo2-dev \
-    libjpeg-dev \
-    libpango1.0-dev \
-    libgif-dev \
-    librsvg2-dev \
-    build-essential \
-    python3
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --omit=dev
 
 COPY . .
 
+ENV PORT=8080
 EXPOSE 8080
 
 CMD ["node", "server.js"]
