@@ -17,7 +17,28 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors({ origin: true, credentials: true }));
+
+// ⭐ IMPORTANT — PUT YOUR REAL FRONTEND URL HERE
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ai-production-d0f8.up.railway.app"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
