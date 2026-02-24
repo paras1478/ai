@@ -1,8 +1,9 @@
 node_modules
 npm-debug.log
-Dockerfile
+.env
 .git
 .gitignore
-uploads
+Dockerfile
+docker-compose.yml
 dist
-.env
+uploads
