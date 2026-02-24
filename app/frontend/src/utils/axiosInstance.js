@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://paras-950.duckdns.org/api",
+  baseURL: "https://ai-production-5490.up.railway.app",
   timeout: 80000,
   headers: {
     "Content-Type": "application/json",
