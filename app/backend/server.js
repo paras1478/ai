@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import app from "./app.js";
 
 import connectDB from "./config/db.js";
 import errorhandler from "./middleware/errorhandler.js";
@@ -65,5 +66,5 @@ app.use(errorhandler);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
