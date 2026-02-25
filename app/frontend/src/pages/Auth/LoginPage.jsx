@@ -1,30 +1,33 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import authService from "../../services/authService";
 import { GoogleLogin } from "@react-oauth/google";
-import axios from "axios";
 import toast from "react-hot-toast";
-
+import api from "../../services/api";
 import { BrainCircuit, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuth();
 
- 
+  // NORMAL LOGIN
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { token, user } = await authService.login(email, password);
+      const res = await api.post("/api/auth/login", {
+        email,
+        password,
+      });
+
+      const { token, user } = res.data;
+
       login(user, token);
       toast.success("Logged in successfully!");
       navigate("/dashboard");
@@ -35,20 +38,22 @@ const LoginPage = () => {
     }
   };
 
-
+  // GOOGLE LOGIN
   const handleGoogleSuccess = async (response) => {
-  const idToken = response.credential;
+    try {
+      const res = await api.post("/api/auth/google", {
+        credential: response.credential,
+      });
 
-  console.log("DOT COUNT:", idToken.split(".").length); 
+      const { token, user } = res.data;
 
-  await axios.post(
-    "http://localhost:8000/api/auth/google",
-    { idToken },
-    { headers: { "Content-Type": "application/json" } }
-  );
-};
-
-  
+      login(user, token);
+      toast.success("Google login success!");
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error("Google login failed");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -56,13 +61,11 @@ const LoginPage = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
-        
         <div className="flex justify-center mb-6">
           <BrainCircuit className="w-8 h-8 text-blue-600 mr-2" />
           <h1 className="text-2xl font-bold">AI Learning Assistant</h1>
         </div>
 
-       
         <div className="mb-4">
           <label>Email</label>
           <div className="flex border px-3 py-2 rounded">
@@ -76,7 +79,6 @@ const LoginPage = () => {
           </div>
         </div>
 
-        
         <div className="mb-4">
           <label>Password</label>
           <div className="flex border px-3 py-2 rounded">
@@ -87,16 +89,12 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full outline-none"
             />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-            >
+            <button type="button" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <EyeOff /> : <Eye />}
             </button>
           </div>
         </div>
 
-        
         <button
           type="submit"
           disabled={loading}
@@ -105,7 +103,6 @@ const LoginPage = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        
         <div className="mt-4 flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}

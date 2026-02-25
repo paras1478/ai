@@ -18,10 +18,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-// ⭐ IMPORTANT — PUT YOUR REAL FRONTEND URL HERE
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://ai-production-d0f8.up.railway.app"
+  "https://ai-production-d0f8.up.railway.app", 
+   "https://ai-production-2424.up.railway.app"
+
 ];
 
 app.use(

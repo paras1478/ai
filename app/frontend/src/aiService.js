@@ -1,5 +1,5 @@
-import axiosInstance from "../utils/axiosInstance";
-import { API_PATHS } from "../utils/apiPaths";
+import axiosInstance from "./utils/axiosInstance";
+import { API_PATHS } from "./utils/apiPaths";
 
 const generateFlashcards = async (documentId, options = {}) => {
   const response = await axiosInstance.post(
