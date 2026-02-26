@@ -2,7 +2,6 @@ import multer from "multer";
 import multerS3 from "multer-s3";
 import { s3 } from "../config/s3.js";
 
-// Only PDF allowed
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
