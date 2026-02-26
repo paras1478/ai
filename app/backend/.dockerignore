@@ -1,9 +1,47 @@
+# dependencies
 node_modules
 npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# env (never send secrets to docker image)
 .env
+.env.*
+!.env.example
+
+# git
 .git
 .gitignore
+
+# docker files (container ke andar nahi chahiye)
 Dockerfile
 docker-compose.yml
-dist
+docker-compose.yaml
+
+# local uploads (S3 use kar rahe ho)
 uploads
+tmp
+temp
+
+# logs
+logs
+*.log
+
+# build cache
+dist
+build
+.cache
+
+# editor
+.vscode
+.idea
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# keys
+*.pem
+*.key
+credentials.json
