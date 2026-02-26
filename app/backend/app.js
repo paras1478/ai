@@ -20,8 +20,7 @@ const __dirname = path.dirname(__filename);
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://ai-production-d0f8.up.railway.app", 
-   "https://ai-production-2424.up.railway.app"
+  "https://ai-1-90m2.onrender.com",
 
 ];
 
@@ -37,6 +36,8 @@ app.use(
       }
     },
     credentials: true,
+     methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"]
   })
 );
 
