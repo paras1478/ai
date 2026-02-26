@@ -19,8 +19,8 @@ const __dirname = path.dirname(__filename);
 
 
 const allowedOrigins = [
-  "http://localhost:5173",
   "https://ai-1-90m2.onrender.com",
+  "http://localhost:5173",
 
 ];
 
