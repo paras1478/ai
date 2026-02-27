@@ -11,16 +11,28 @@ export const uploadDocument = async (req, res) => {
   try {
     const file = req.file;
 
-    if (!file)
+    if (!file) {
       return res.status(400).json({ message: "No file uploaded" });
+    }
 
-    if (!file.mimetype.includes("pdf"))
+    if (!file.mimetype.includes("pdf")) {
       return res.status(400).json({ message: "Only PDF allowed" });
+    }
 
-    const extractedText = await extractPdfText(file.buffer);
+    const result = await extractPdfText(file.buffer);
 
-    if (!extractedText || extractedText.length < 20) {
-      return res.status(400).json({ message: "Could not read PDF text" });
+    if (!result.success) {
+      return res.status(400).json({
+        message: result.message || "Could not read PDF text"
+      });
+    }
+
+    const extractedText = result.text.trim();
+
+    if (extractedText.length < 20) {
+      return res.status(400).json({
+        message: "PDF contains too little readable text (possibly scanned document)"
+      });
     }
 
     const fileUrl = await uploadToS3(file);
@@ -31,7 +43,7 @@ export const uploadDocument = async (req, res) => {
       fileName: file.originalname,
       filePath: fileUrl,
       fileSize: file.size,
-      extractedText,
+      extractedText: extractedText,
       status: "ready",
     });
 
