@@ -1,19 +1,16 @@
-import pdf from "pdf-parse";
+import pkg from "pdf-parse";
+
+const pdf = pkg.default || pkg;
 
 const extractPdfText = async (fileBuffer) => {
   try {
-    if (!fileBuffer) {
-      throw new Error("No file buffer received");
-    }
-
     const data = await pdf(fileBuffer);
 
-    // Sometimes PDF has no selectable text (scanned image PDF)
     if (!data?.text || data.text.trim().length === 0) {
       return {
         success: false,
         text: "",
-        message: "No readable text found (probably scanned PDF)"
+        message: "No readable text found"
       };
     }
 
@@ -24,7 +21,6 @@ const extractPdfText = async (fileBuffer) => {
 
   } catch (err) {
     console.error("PDF PARSE ERROR:", err.message);
-
     return {
       success: false,
       text: "",
