@@ -3,11 +3,13 @@ import { API_PATHS } from "../utils/apiPaths";
 
 const getDocuments = async () => {
   try {
-    const response = await axiosInstance.get(
-      API_PATHS.DOCUMENTS.GET_DOCUMENTS
-    );
+    console.log("Calling:", API_PATHS.DOCUMENTS.GET_DOCUMENTS);
+    console.log("BaseURL:", import.meta.env.VITE_API_URL);
+
+    const response = await axiosInstance.get(API_PATHS.DOCUMENTS.GET_DOCUMENTS);
     return response.data;
   } catch (error) {
+    console.log("ERROR:", error);
     throw error.response?.data || { message: "Failed to fetch documents" };
   }
 };
