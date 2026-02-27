@@ -1,39 +1,36 @@
-import pdfjs from "pdfjs-dist/legacy/build/pdf.js";
-import fetch from "node-fetch";
+import pdf from "pdf-parse";
 
-const { getDocument } = pdfjs;
-
-export const extractPdfText = async (fileUrl) => {
+const extractPdfText = async (fileBuffer) => {
   try {
-    // download pdf from S3
-    const res = await fetch(fileUrl);
-    const arrayBuffer = await res.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const pdf = await getDocument({
-      data,
-      useWorkerFetch: false,
-      isEvalSupported: false,
-      useSystemFonts: true,
-    }).promise;
-
-    let text = "";
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const content = await page.getTextContent();
-
-      const pageText = content.items
-        .map(item => item.str || "")
-        .join(" ");
-
-      text += pageText + "\n";
+    if (!fileBuffer) {
+      throw new Error("No file buffer received");
     }
 
-    return text;
+    const data = await pdf(fileBuffer);
+
+    // Sometimes PDF has no selectable text (scanned image PDF)
+    if (!data?.text || data.text.trim().length === 0) {
+      return {
+        success: false,
+        text: "",
+        message: "No readable text found (probably scanned PDF)"
+      };
+    }
+
+    return {
+      success: true,
+      text: data.text
+    };
 
   } catch (err) {
-    console.error("PDF PARSE ERROR:", err);
-    return "";
+    console.error("PDF PARSE ERROR:", err.message);
+
+    return {
+      success: false,
+      text: "",
+      message: "Failed to parse PDF"
+    };
   }
 };
+
+export default extractPdfText;
