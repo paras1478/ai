@@ -1,27 +1,37 @@
 import fs from "fs";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.js";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = undefined;
-
 export const extractPdfText = async (filePath) => {
-  const data = new Uint8Array(fs.readFileSync(filePath));
+  try {
+    const data = new Uint8Array(fs.readFileSync(filePath));
 
-  const pdf = await pdfjsLib.getDocument({
-    data,
-    useWorkerFetch: false,
-    isEvalSupported: false,
-    useSystemFonts: true,
-  }).promise;
+    const loadingTask = pdfjsLib.getDocument({
+      data,
+      disableWorker: true,      // ⭐ THIS is the real fix
+      useWorkerFetch: false,
+      isEvalSupported: false,
+      useSystemFonts: true,
+    });
 
-  let text = "";
+    const pdf = await loadingTask.promise;
 
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
+    let text = "";
 
-    const pageText = content.items.map(item => item.str).join(" ");
-    text += pageText + "\n";
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const content = await page.getTextContent();
+
+      const pageText = content.items
+        .map(item => item.str || "")
+        .join(" ");
+
+      text += pageText + "\n";
+    }
+
+    return text;
+
+  } catch (err) {
+    console.error("PDF PARSE ERROR:", err);
+    throw err;
   }
-
-  return text;
 };
