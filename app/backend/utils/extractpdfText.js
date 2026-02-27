@@ -1,16 +1,22 @@
-import pkg from "pdf-parse";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
-const pdf = pkg.default || pkg;
+// CommonJS module load
+const pdf = require("pdf-parse");
 
 const extractPdfText = async (fileBuffer) => {
   try {
+    if (!fileBuffer) {
+      return { success: false, text: "", message: "No file buffer" };
+    }
+
     const data = await pdf(fileBuffer);
 
     if (!data?.text || data.text.trim().length === 0) {
       return {
         success: false,
         text: "",
-        message: "No readable text found"
+        message: "No readable text found (scanned PDF)"
       };
     }
 
@@ -20,7 +26,7 @@ const extractPdfText = async (fileBuffer) => {
     };
 
   } catch (err) {
-    console.error("PDF PARSE ERROR:", err.message);
+    console.error("PDF PARSE ERROR:", err);
     return {
       success: false,
       text: "",
