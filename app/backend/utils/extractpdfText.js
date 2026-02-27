@@ -1,11 +1,17 @@
 import pdfjs from "pdfjs-dist/legacy/build/pdf.js";
+import fetch from "node-fetch";
 
 const { getDocument } = pdfjs;
 
-export const extractPdfText = async (buffer) => {
+export const extractPdfText = async (fileUrl) => {
   try {
+    // download pdf from S3
+    const res = await fetch(fileUrl);
+    const arrayBuffer = await res.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+
     const pdf = await getDocument({
-      data: buffer,
+      data,
       useWorkerFetch: false,
       isEvalSupported: false,
       useSystemFonts: true,
