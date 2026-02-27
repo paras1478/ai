@@ -4,7 +4,8 @@ import Document from "../models/document.js";
 import Flashcard from "../models/Flashcard.js";
 import Quiz from "../models/Quiz.js";
 
-import { extractPdfText } from "../utils/extractpdfText.js"; // ✅ correct import
+import { extractPdfText } from "../utils/extractpdfText.js";
+import { uploadToS3 } from "../utils/s3Upload.js";   
 
 export const uploadDocument = async (req, res) => {
   try {
@@ -16,11 +17,13 @@ export const uploadDocument = async (req, res) => {
     if (!file.mimetype.includes("pdf"))
       return res.status(400).json({ message: "Only PDF allowed" });
 
-    // multer-s3 already uploaded file
-    const fileUrl = file.location;
+    const extractedText = await extractPdfText(file.buffer);
 
-    // ✅ correct function call
-    const extractedText = await extractPdfText(fileUrl);
+    if (!extractedText || extractedText.length < 20) {
+      return res.status(400).json({ message: "Could not read PDF text" });
+    }
+
+    const fileUrl = await uploadToS3(file);
 
     const document = await Document.create({
       userId: req.user._id,
