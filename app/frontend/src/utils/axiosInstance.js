@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://ai-production-2424.up.railway.app",
+  baseURL: import.meta.env.VITE_API_URL || "https://ai-1-90m2.onrender.com",
   timeout: 80000,
   withCredentials: true,
   headers: {
