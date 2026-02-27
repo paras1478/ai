@@ -4,7 +4,7 @@ import Document from "../models/document.js";
 import Flashcard from "../models/Flashcard.js";
 import Quiz from "../models/Quiz.js";
 
-import { extractPdfText } from "../utils/extractpdfText.js";
+import  extractPdfText  from "../utils/extractpdfText.js";
 import { uploadToS3 } from "../utils/s3Upload.js";   
 
 export const uploadDocument = async (req, res) => {

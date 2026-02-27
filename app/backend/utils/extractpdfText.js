@@ -1,7 +1,6 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
-// CommonJS module load
 const pdf = require("pdf-parse");
 
 const extractPdfText = async (fileBuffer) => {
